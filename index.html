@@ -101,7 +101,7 @@
     .hero h1{ 
       font-family:"Playfair Display",serif; 
       font-size:clamp(25px,5vw,48px); 
-      color:#1a1a1a;
+      color:#fff; /* CAFE 17 now white */
       position:relative;
       z-index:1;
       animation:fadeInDown 0.8s ease;
@@ -132,8 +132,8 @@
       align-items:stretch;
     }
     .tool-card{
-      background: #0f0f0f;
-      border: 1px solid var(--stroke);
+      background: rgba(184,134,11,0.25); /* stronger gold tint */
+      border: 1px solid #ccc;
       border-radius: var(--radius);
       padding: 12px;
       display:flex; gap:10px; align-items:center;
@@ -166,6 +166,9 @@
     }
     .mini{
       font-size:11px; color:#888; line-height:1.25;
+      background:rgba(0,0,0,0.05);
+      padding:4px 8px;
+      border-radius:4px;
     }
 
     .section-title{
@@ -176,7 +179,7 @@
       font-family:"Playfair Display",serif;
       font-size:32px;
       color:var(--gold);
-      background:transparent; /* removed dark overlay */
+      background:rgba(255,255,255,0.75); /* light gray translucent */
       backdrop-filter:blur(10px);
       animation:fadeInLeft 0.6s ease;
     }
@@ -287,7 +290,7 @@
     .cart-float{
       position:fixed; bottom:22px; right:22px;
       background:linear-gradient(135deg, var(--gold), #e8c547);
-      color:#000;
+      color:#777;
       padding:14px 16px; border-radius:999px;
       font-weight:900; z-index:3000; cursor:pointer;
       box-shadow:0 10px 30px rgba(0,0,0,0.5), 0 0 20px rgba(184,134,11,0.3);
@@ -712,7 +715,9 @@
         waSend: "WhatsApp’a Gönder",
         searchLabel: "Arama",
         searchPH: "Ürün ara... (örn: tiramisu, v60)",
+        searchHint: "İpucu: Arama isim + açıklamada çalışır.",
         catLabel: "Kategori",
+        filterHint: "Kategori seçince liste buna göre daralır.",
         sortLabel: "Sırala",
         all: "Tümü",
         featured: "Önerilen",
@@ -742,6 +747,7 @@
         waSend: "Send to WhatsApp",
         searchLabel: "Search",
         searchPH: "Search items... (e.g. tiramisu, v60)",
+        searchHint: "Tip: Search matches names and descriptions",
         catLabel: "Category",
         sortLabel: "Sort",
         all: "All",
@@ -751,15 +757,14 @@
         nameAsc: "Name (A→Z)",
         nameDesc: "Name (Z→A)",
         rateHint: "TRY rate is manual (set it yourself).",
+        filterHint: "Choosing a category narrows the list.",
+        searchHint: "Tip: Search matches names and descriptions",
         waMini: "To place an order via WhatsApp, click “Send to WhatsApp”.",
         categories: { br: "Breakfast", sn: "Sandwiches & Wraps", cf: "Coffee & Hot Drinks", ds: "Desserts", bd: "Cold Drinks", sl: "Salads" }
       }
     };
 
-    // ----------------------------
-    // Products (base prices in EUR)
-    // (DÜZENLENDİ) i alanları U(...) ile stabil hale getirildi + alt eklendi
-    // ----------------------------
+ 
     const products = [
       // KAHVALTI (BR)
       {
@@ -1228,9 +1233,11 @@
       const t = translations[currentLang];
       document.getElementById("searchLabel").innerText = t.searchLabel;
       document.getElementById("searchInput").placeholder = t.searchPH;
+      document.getElementById("searchHint").innerText = t.searchHint || "";
 
       document.getElementById("filterLabel").innerText = t.catLabel;
       document.getElementById("sortLabel").innerText = t.sortLabel;
+      document.getElementById("filterHint").innerText = t.filterHint || "";
 
       const catSel = document.getElementById("catFilter");
       const currentVal = catSel.value;
@@ -1257,6 +1264,7 @@
       sortSel.value = sortVal || "featured";
 
       document.getElementById("rateHint").innerText = t.rateHint;
+      // hints updated above
       document.getElementById("waMini").innerText = t.waMini;
     }
 
