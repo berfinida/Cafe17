@@ -488,8 +488,13 @@
     // Cart: { [productId]: qty }
     const STORAGE_KEY = "cafe17_cart_v2";
     const SETTINGS_KEY = "cafe17_settings_v1";
+
+    // (EKLENDİ) Order note persistence
+    const NOTE_KEY = "cafe17_note_v1";
+
     let cart = loadCart();
     loadSettings();
+    loadOrderNote();
 
     // =========================================================
     // (EKLENDİ) HERO BACKGROUNDS: random değişen gerçek foto
@@ -757,6 +762,23 @@
       const waNumber = document.getElementById("waNumber").value.trim();
       const s = { currency, tryRate, lang: currentLang, waNumber };
       localStorage.setItem(SETTINGS_KEY, JSON.stringify(s));
+    }
+
+    // (EKLENDİ) Order note persistence (ayrı key)
+    function loadOrderNote(){
+      try{
+        const raw = localStorage.getItem(NOTE_KEY);
+        if(!raw) return;
+        const noteEl = document.getElementById("orderNote");
+        if(noteEl) noteEl.value = String(raw);
+      }catch{}
+    }
+    function saveOrderNote(){
+      try{
+        const noteEl = document.getElementById("orderNote");
+        const v = (noteEl?.value || "").toString();
+        localStorage.setItem(NOTE_KEY, v);
+      }catch{}
     }
 
     // ----------------------------
@@ -1140,14 +1162,53 @@
     const cartModal = document.getElementById("cartModal");
     const cartBackdrop = document.getElementById("cartBackdrop");
 
+    // (EKLENDİ) focus restore
+    let lastFocusEl = null;
+
     function openCart(){
+      lastFocusEl = document.activeElement;
       cartModal.classList.add("open");
       cartBackdrop.classList.add("open");
       cartModal.focus();
+      // (EKLENDİ) try to focus first meaningful control
+      const first = cartModal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+      if(first) first.focus();
     }
     function closeCart(){
       cartModal.classList.remove("open");
       cartBackdrop.classList.remove("open");
+      // (EKLENDİ) restore focus to where it came from (prefer cartFloat)
+      const cartFloat = document.getElementById("cartFloat");
+      if(cartFloat) cartFloat.focus();
+      else if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+    }
+
+    // =========================================================
+    // (EKLENDİ) Modal focus trap (Tab içinde kalsın)
+    // =========================================================
+    function trapFocusInModal(e){
+      if(!cartModal.classList.contains("open")) return;
+      if(e.key !== "Tab") return;
+
+      const focusables = cartModal.querySelectorAll(
+        'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
+      );
+      if(!focusables.length) return;
+
+      const first = focusables[0];
+      const last = focusables[focusables.length - 1];
+
+      if(e.shiftKey){
+        if(document.activeElement === first){
+          e.preventDefault();
+          last.focus();
+        }
+      } else {
+        if(document.activeElement === last){
+          e.preventDefault();
+          first.focus();
+        }
+      }
     }
 
     // =========================================================
@@ -1217,10 +1278,10 @@
     });
 
     // Search/filter/sort re-render
-    ["searchInput","catFilter","sortSelect"].forEach(id=>{
-      document.getElementById(id).addEventListener("input", () => renderMenu());
-      document.getElementById(id).addEventListener("change", () => renderMenu());
-    });
+    // (DÜZENLENDİ) double render engellendi: searchInput -> input, select'ler -> change
+    document.getElementById("searchInput").addEventListener("input", () => renderMenu());
+    document.getElementById("catFilter").addEventListener("change", () => renderMenu());
+    document.getElementById("sortSelect").addEventListener("change", () => renderMenu());
 
     // Language toggle
     document.getElementById("langBtn").addEventListener("click", () => {
@@ -1247,6 +1308,9 @@
 
     // WhatsApp number persist
     document.getElementById("waNumber").addEventListener("input", saveSettings);
+
+    // (EKLENDİ) Order note persist
+    document.getElementById("orderNote").addEventListener("input", saveOrderNote);
 
     // Drawer controls
     menuBtn.addEventListener("click", () => {
@@ -1285,12 +1349,13 @@
       }
     });
 
-    // ESC to close drawer/cart
+    // ESC to close drawer/cart + (EKLENDİ) focus trap Tab
     document.addEventListener("keydown", (e) => {
       if(e.key === "Escape"){
         closeDrawer();
         closeCart();
       }
+      trapFocusInModal(e);
     });
 
     // Init
