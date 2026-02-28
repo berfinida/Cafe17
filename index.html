@@ -182,6 +182,8 @@
       background:rgba(255,255,255,0.75); /* light gray translucent */
       backdrop-filter:blur(10px);
       animation:fadeInLeft 0.6s ease;
+      /* ensure anchor target isn't hidden behind sticky header */
+      scroll-margin-top:80px;
     }
     @keyframes fadeInLeft{
       from{
@@ -209,6 +211,7 @@
       border:1px solid #222; display:flex; flex-direction:column;
       transition:0.3s cubic-bezier(0.23, 1, 0.320, 1);
       position:relative; /* (EKLENDİ) skeleton için */
+      cursor:pointer; /* kullanıcı karta tıklayabileceğini anlasın */
     }
     .card-badge-area{
       position: absolute;
@@ -612,6 +615,8 @@
       <button class="xbtn" id="cartClose" type="button" aria-label="Sepeti Kapat">✕</button>
     </div>
 
+
+
     <div class="modal-body">
       <div id="cartBody"></div>
 
@@ -640,6 +645,18 @@
         <button class="btn-outline" id="waSendBtn" type="button">WhatsApp’a Gönder</button>
         <button class="btn-solid" id="checkoutBtn" type="button">Siparişi Tamamla</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Product Modal -->
+  <div class="modal-backdrop" id="productBackdrop" aria-hidden="true"></div>
+  <div class="modal" id="productModal" role="dialog" aria-modal="true" aria-label="Ürün" tabindex="-1">
+    <div class="modal-header">
+      <h3 id="productModalTitle">Ürün</h3>
+      <button class="xbtn" id="productClose" type="button" aria-label="Kapat">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="productBody"></div>
     </div>
   </div>
 
@@ -770,29 +787,61 @@
       {
         id:"br1", cat:"br", p:18.00,
         i: "/images/serpmekahvalti.png",
-        tr:{n:"Serpme Kahvaltı", d:"Yerel peynirler, şarküteri ve sınırsız çay (Kişi Başı)."},
-        en:{n:"Turkish Spread", d:"Local cheeses, charcuterie and unlimited tea (Per Person)."},
+        tr:{
+          n:"Serpme Kahvaltı",
+          d:"Yerel peynirler, şarküteri ve sınırsız çay (Kişi Başı).",
+          ld:"Köylerden taze getirilen beyaz peynir, kaşar ve lor; zeytin, bal-kaymak, reçel seçenekleri; yanında taze demlenmiş çay ve ev yapımı menemen. Her tabakta mevsime göre değişen özel şarküteri ürünleri de bulunur."
+        },
+        en:{
+          n:"Turkish Spread",
+          d:"Local cheeses, charcuterie and unlimited tea (Per Person).",
+          ld:"Featuring freshly sourced cheeses, olives, honey-butter and homemade jams; served with eggs in menemen style and seasonal cured meats. Includes unlimited Turkish tea brewed traditionaly."
+        },
         alt:{tr:"Serpme kahvaltı tabağı", en:"Turkish breakfast spread"}
       },
       {
         id:"br2", cat:"br", p:12.00,
         i: "/images/eggsbenedict.png",
-        tr:{n:"Eggs Benedict", d:"Poşe yumurta, somon füme ve hollandez sos."},
-        en:{n:"Eggs Benedict", d:"Poached eggs, smoked salmon and hollandaise."},
+        tr:{
+          n:"Eggs Benedict",
+          d:"Poşe yumurta, somon füme ve hollandez sos.",
+          ld:"Taze poşe yumurta, hafif dumanlı somon ve ev yapımı hollandez sosu; kırmızı biber serpisinde, roka yatak üzerinde servis edilir."
+        },
+        en:{
+          n:"Eggs Benedict",
+          d:"Poached eggs, smoked salmon and hollandaise.",
+          ld:"Fresh poached eggs atop smoked salmon with house-made hollandaise sauce; served on a bed of arugula with a hint of red pepper."
+        },
         alt:{tr:"Eggs Benedict", en:"Eggs Benedict"}
       },
       {
         id:"br3", cat:"br", p:13.50,
         i: "/images/avokadoburrata.png",
-        tr:{n:"Avokado & Burrata", d:"Ekşi mayalı ekmek üzerinde taze burrata."},
-        en:{n:"Avocado & Burrata", d:"Fresh burrata cheese on sourdough bread."},
+        tr:{
+          n:"Avokado & Burrata",
+          d:"Ekşi mayalı ekmek üzerinde taze burrata.",
+          ld:"Kalın dilimlenmiş avokado, sızma zeytinyağı ve taze otlarla zenginleştirilmiş; kremamsı burrata peynirinin yanında hafif limon sosu ile servis edilir."
+        },
+        en:{
+          n:"Avocado & Burrata",
+          d:"Fresh burrata cheese on sourdough bread.",
+          ld:"Thick-sliced avocado dressed with extra virgin olive oil and fresh herbs, paired with creamy burrata cheese and a light lemon drizzle on sourdough."
+        },
         alt:{tr:"Avokado ve burrata", en:"Avocado & burrata"}
       },
       {
         id:"br4", cat:"br", p: 9.50,
         i: "/images/menemen.png",
-        tr:{n:"Menemen", d:"Taze domates, biber ve köy yumurtası."},
-        en:{n:"Menemen", d:"Traditional eggs with tomatoes and peppers."},
+        tr:{
+          n:"Menemen",
+          d:"Taze domates, biber ve köy yumurtası.",
+          ld:"Organik köy yumurtaları, hafif acılı çarliston biberi ve olgunlaşmış domatesler; tereyağında sote edilerek pişirilir. Yanında taze kıyılmış maydanoz ve sıcak ekmekle servis edilir."
+        },
+        en:{
+          n:"Menemen",
+          d:"Traditional eggs with tomatoes and peppers.",
+          ld:"Made with organic farm eggs, mildly spicy green peppers and ripe tomatoes, sautéed in butter. Served with chopped parsley and warm bread on the side."
+        },
         alt:{tr:"Menemen", en:"Menemen"}
       },
 
@@ -800,22 +849,46 @@
       {
         id:"sn1", cat:"sn", p:14.50,
         i: "/images/rozbifhardal.png",
-        tr:{n:"Rozbif & Hardal", d:"Dana rozbif, karamelize soğan ve dijon hardal."},
-        en:{n:"Roast Beef & Mustard", d:"Beef slices, caramelized onions and dijon."},
+        tr:{
+          n:"Rozbif & Hardal",
+          d:"Dana rozbif, karamelize soğan ve dijon hardal.",
+          ld:"Taze fırınlanmış baget ekmeği içinde ince dilimlenmiş, orta pişmiş rozbif; karamelize kırmızı soğan, taze roka ve hafif acılı dijon hardal ile tamamlandı. Gevrek dış kabuk, yumuşak iç dolguyla dengeli bir tat sunar."
+        },
+        en:{
+          n:"Roast Beef & Mustard",
+          d:"Beef slices, caramelized onions and dijon.",
+          ld:"Layered inside a freshly baked baguette, tender slices of roast beef cooked to medium; topped with caramelized red onions, fresh arugula and a zingy dijon mustard. The crusty bread adds a pleasant crunch."
+        },
         alt:{tr:"Rozbifli sandviç", en:"Roast beef sandwich"}
       },
       {
         id:"sn2", cat:"sn", p:11.00,
         i: "/images/dörtpeynirlitost.png",
-        tr:{n:"Dört Peynirli Tost", d:"Mozzarella, çedar, parmesan ve rokfor."},
-        en:{n:"Four Cheese Toast", d:"Mozzarella, cheddar, parmesan and roquefort."},
+        tr:{
+          n:"Dört Peynirli Tost",
+          d:"Mozzarella, çedar, parmesan ve rokfor.",
+          ld:"4 peynirin uyumu: eriyen mozzarella, keskin çedar, aromatik parmesan ve karakteristik rokfor. Afiyetle çıtır ekmek arasında peynir tutkusunu yaşayın."
+        },
+        en:{
+          n:"Four Cheese Toast",
+          d:"Mozzarella, cheddar, parmesan and roquefort.",
+          ld:"A harmony of four cheeses: melting mozzarella, sharp cheddar, nutty parmesan, and tangy roquefort between crunchy bread. A cheese lover's dream."
+        },
         alt:{tr:"Dört peynirli tost", en:"Four cheese toast"}
       },
       {
         id:"sn3", cat:"sn", p:13.00,
         i: "/images/cafe17club.png",
-        tr:{n:"Cafe 17 Club", d:"Tavuk füme, dana jambon, yumurta ve mayonez."},
-        en:{n:"Cafe 17 Club", d:"Smoked chicken, beef ham, egg and mayo."},
+        tr:{
+          n:"Cafe 17 Club",
+          d:"Tavuk füme, dana jambon, yumurta ve mayonez.",
+          ld:"Üç katmanlı sandviç; taze kıtır ekmek arasında füme tavuk, dilimlenmiş dana jambon, haşlanmış yumurta dilimleri, marul ve ev yapımı mayonez. Yanında patates kızartması önerilir."
+        },
+        en:{
+          n:"Cafe 17 Club",
+          d:"Smoked chicken, beef ham, egg and mayo.",
+          ld:"Triple-decker sandwich with smoked chicken, sliced beef ham, hard-boiled egg slices, lettuce and house mayo on toasted bread. Served best with fries."
+        },
         alt:{tr:"Club sandviç", en:"Club sandwich"}
       },
 
@@ -823,153 +896,321 @@
       // ESPRESSO TABANI (En basit)
       {
         id:"cf1", cat:"cf", p: 3.20,
-        i: "https://images.unsplash.com/photo-1559056199-641a0ac8b3f0?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Espresso", d:"Saf %100 Arabica, tek shot."},
-        en:{n:"Espresso", d:"Pure 100% Arabica, single shot."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Espresso",
+          d:"Saf %100 Arabica, tek shot.",
+          ld:"Yoğun crema tabakasıyla servis edilen taze çekilmiş Arabica espresso. Kahve severler için saf ve güçlü bir başlangıç."
+        },
+        en:{
+          n:"Espresso",
+          d:"Pure 100% Arabica, single shot.",
+          ld:"Freshly ground Arabica espresso served with a thick crema layer. A pure, powerful shot for coffee aficionados."
+        },
         alt:{tr:"Espresso", en:"Espresso"}
       },
       {
         id:"cf2", cat:"cf", p: 3.50,
-        i: "/images/espressodoppio.png",
-        tr:{n:"Espresso Doppio", d:"Çift shot güçlü Arabica espresso."},
-        en:{n:"Espresso Doppio", d:"Double shot strong Arabica espresso."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Espresso Doppio",
+          d:"Çift shot güçlü Arabica espresso.",
+          ld:"Çift doz enerji; iki shot taze çekilmiş Arabica kahve, ekstra yoğun crema ve zengin aroma sunar. Günün her saati için ideal."
+        },
+        en:{
+          n:"Espresso Doppio",
+          d:"Double shot strong Arabica espresso.",
+          ld:"Twice the boost; two shots of freshly ground Arabica with extra thick crema and rich aroma. Perfect anytime."
+        },
         alt:{tr:"Doppio", en:"Doppio"}
       },
       {
         id:"cf3", cat:"cf", p: 3.80,
-        i: "https://images.unsplash.com/photo-1610632823901-ba3c1826fbf9?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Americano", d:"Espresso ve sıcak su, hafif ve temiz."},
-        en:{n:"Americano", d:"Espresso and hot water, light and clean."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Americano",
+          d:"Espresso ve sıcak su, hafif ve temiz.",
+          ld:"Taze espresso üstüne eklenen sıcak su ile uzun ve dengeli bir içecek; kafede uzun süre sohbetlerin yanına yakışır."
+        },
+        en:{
+          n:"Americano",
+          d:"Espresso and hot water, light and clean.",
+          ld:"Fresh espresso topped with hot water for a longer, balanced drink; perfect companion for leisurely conversations."
+        },
         alt:{tr:"Americano", en:"Americano"}
       },
       // SÜT TABANI (Orta)
       {
         id:"cf4", cat:"cf", p: 4.20,
-        i: "https://images.unsplash.com/photo-1514432324607-2e467f4af445?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Macchiato", d:"Espresso ve az süt köpüğü, yoğun tat."},
-        en:{n:"Macchiato", d:"Espresso with small milk foam, strong taste."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Macchiato",
+          d:"Espresso ve az süt köpüğü, yoğun tat.",
+          ld:"Sıcak espresso üstüne sadece bir damla süt köpüğü; yoğun kahve aroması hiç bozulmadan sunulur. Klasik İtalyan tarzı."
+        },
+        en:{
+          n:"Macchiato",
+          d:"Espresso with small milk foam, strong taste.",
+          ld:"Hot espresso marked with just a dollop of milk foam; preserves intense coffee flavor. Classic Italian style."
+        },
         alt:{tr:"Macchiato", en:"Macchiato"}
       },
       {
         id:"cf5", cat:"cf", p: 4.50,
-        i: "https://images.unsplash.com/photo-1517668808822-9ebb02ae2a0e?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Cappuccino", d:"Espresso, buharlaştırılmış süt ve köpük (1:1:1)."},
-        en:{n:"Cappuccino", d:"Espresso, steamed milk and foam (1:1:1)."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Cappuccino",
+          d:"Espresso, buharlaştırılmış süt ve köpük (1:1:1).",
+          ld:"Kremamsı buharlaştırılmış süt, yoğun espresso ve kalın süt köpüğünün eşit karışımı. Üzerine kakao tozu serpip rahatlatıcı bir içecek sunar."
+        },
+        en:{
+          n:"Cappuccino",
+          d:"Espresso, steamed milk and foam (1:1:1).",
+          ld:"A soothing drink of equal parts espresso, steamed milk and thick foam. Finished with a dusting of cocoa powder for extra warmth."
+        },
         alt:{tr:"Cappuccino", en:"Cappuccino"}
       },
       {
         id:"cf6", cat:"cf", p: 4.70,
-        i: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Latte", d:"Espresso ve bol sıcak süt, yumuşak tat."},
-        en:{n:"Latte", d:"Espresso and plenty of hot milk, smooth taste."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Latte",
+          d:"Espresso ve bol sıcak süt, yumuşak tat.",
+          ld:"Zengin espresso ve bol süt karışımı, ipeksi bir doku. İsteğe göre vanilya veya karamelli bir not ekleyebiliriz."
+        },
+        en:{
+          n:"Latte",
+          d:"Espresso and plenty of hot milk, smooth taste.",
+          ld:"Rich espresso blended with plenty of milk for a silky texture. Optionally flavored with vanilla or caramel."
+        },
         alt:{tr:"Latte", en:"Latte"}
       },
       {
         id:"cf7", cat:"cf", p: 5.00,
-        i: "/images/flatwhite.png",
-        tr:{n:"Flat White", d:"İpeksi süt dokusu, yoğun espresso tat."},
-        en:{n:"Flat White", d:"Silky milk texture, intense espresso taste."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Flat White",
+          d:"İpeksi süt dokusu, yoğun espresso tat.",
+          ld:"Servis edilen ince beyaz köpük katmanı ile, yoğun espresso karakteri ve sütün dengesi uyum içinde. Avustralya çeşidi olarak bilinir."
+        },
+        en:{
+          n:"Flat White",
+          d:"Silky milk texture, intense espresso taste.",
+          ld:"Known as an Australian favorite, features a thin layer of microfoam balancing intense espresso character with smooth milk."
+        },
         alt:{tr:"Flat white", en:"Flat white"}
       },
       // SPESİYAL KAHVELER (Premium)
       {
         id:"cf8", cat:"cf", p: 5.20,
-        i: "/images/v60handbrew.png",
-        tr:{n:"V60 Hand Brew", d:"Seçkin tek kökenli çekirdekler, özel demleme."},
-        en:{n:"V60 Hand Brew", d:"Specialty single origin beans, special brewing."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"V60 Hand Brew",
+          d:"Seçkin tek kökenli çekirdekler, özel demleme.",
+          ld:"Barista tarafından hassas su sıcaklığı ve akış kontrolü ile hazırlanan filtre kahve. Her dökümde aroma profili değişir, tazeliğe dikkat."
+        },
+        en:{
+          n:"V60 Hand Brew",
+          d:"Specialty single origin beans, special brewing.",
+          ld:"A pour-over coffee crafted by barista with precise water temperature and flow control. Flavor profile shifts with each brew – freshness matters."
+        },
         alt:{tr:"V60 demleme", en:"V60 pour over"}
       },
       {
         id:"cf9", cat:"cf", p: 5.50,
-        i: "https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Mocha", d:"Espresso, süt ve hafif çikolata, tatlı tat."},
-        en:{n:"Mocha", d:"Espresso, milk and light chocolate, sweet taste."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Mocha",
+          d:"Espresso, süt ve hafif çikolata, tatlı tat.",
+          ld:"Zengin espresso, buharlaştırılmış süt ve kaliteli çikolata şurubunun birleşimi; üzerine krem şanti ile ekstra lezzet."
+        },
+        en:{
+          n:"Mocha",
+          d:"Espresso, milk and light chocolate, sweet taste.",
+          ld:"A fusion of rich espresso, steamed milk and premium chocolate syrup; topped with whipped cream for added indulgence."
+        },
         alt:{tr:"Mocha", en:"Mocha"}
       },
       {
         id:"cf10", cat:"cf", p: 6.00,
-        i: "https://images.unsplash.com/photo-1563805042-7684c019e157?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Affogato", d:"Vanilya dondurması üzerine sıcak espresso."},
-        en:{n:"Affogato", d:"Vanilla ice cream with hot espresso poured over."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Affogato",
+          d:"Vanilya dondurması üzerine sıcak espresso.",
+          ld:"Soğuk, kremamsı vanilya dondurmasının üzerine taze çekilmiş sıcak espresso dökülür. Kahve ve tatlı tatları mükemmel dengede."
+        },
+        en:{
+          n:"Affogato",
+          d:"Vanilla ice cream with hot espresso poured over.",
+          ld:"Hot espresso poured over cold, creamy vanilla ice cream. The coffee and dessert flavors achieve a perfect balance."
+        },
         alt:{tr:"Affogato", en:"Affogato"}
       },
       // SICAK İÇECEKLER
       {
         id:"cf11", cat:"cf", p: 3.50,
-        i: "https://images.unsplash.com/photo-1597318972702-9c33f03c5af9?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Çay", d:"Seçili çay çeşitleri (Osmanlı, Elma, Bergamot)."},
-        en:{n:"Tea", d:"Premium tea varieties (Ottoman, Apple, Bergamot)."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Çay",
+          d:"Seçili çay çeşitleri (Osmanlı, Elma, Bergamot).",
+          ld:"Doğu’nun klasik çayları; çaydanlıkta uzun demlenen, taze dallardan toplanan yapraklar. Yanında limon dilimi ve şeker sunulur."
+        },
+        en:{
+          n:"Tea",
+          d:"Premium tea varieties (Ottoman, Apple, Bergamot).",
+          ld:"Classic Eastern teas; leaves brewed long in a teapot with fresh-picked leaves. Served with a slice of lemon and sugar on the side."
+        },
         alt:{tr:"Çay", en:"Tea"}
       },
       {
         id:"cf12", cat:"cf", p: 5.00,
-        i: "https://images.unsplash.com/photo-1555939594-58d7cb561a1f?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Matcha Latte", d:"Japon matcha ve sıcak süt, kremsi tat."},
-        en:{n:"Matcha Latte", d:"Japanese matcha and hot milk, creamy taste."},
+        i: "/images/coffee-beans.png",
+        tr:{
+          n:"Matcha Latte",
+          d:"Japon matcha ve sıcak süt, kremsi tat.",
+          ld:"Toz Japon matchası, frotte edilmiş sütle buluşuyor. Hafif çay notlarıyla sakinleştirici ve enerji verici."
+        },
+        en:{
+          n:"Matcha Latte",
+          d:"Japanese matcha and hot milk, creamy taste.",
+          ld:"Japanese matcha powder whisked into frothed milk. Calming yet energizing with subtle tea notes."
+        },
         alt:{tr:"Matcha latte", en:"Matcha latte"}
       },
       {
         id:"cf13", cat:"cf", p: 5.50,
-        i: "https://images.unsplash.com/photo-1585470733340-a8a85f4142e1?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Sıcak Çikolata", d:"Ricos sıcak çikolata, çikolatanın tanrısı."},
-        en:{n:"Hot Chocolate", d:"Ricos hot chocolate, chocolate heaven."},
+        i: "/images/icedamericano.png",
+        tr:{
+          n:"Sıcak Çikolata",
+          d:"Ricos sıcak çikolata, çikolatanın tanrısı.",
+          ld:"Yoğun Ricos çikolata, eritilmiş ve sıcak sütle karıştırılarak hazırlanır. Üzerine marshmallow veya krem şanti talebe göre."
+        },
+        en:{
+          n:"Hot Chocolate",
+          d:"Ricos hot chocolate, chocolate heaven.",
+          ld:"Rich Ricos chocolate melted and mixed with hot milk. Topped with marshmallows or whipped cream upon request."
+        },
         alt:{tr:"Sıcak çikolata", en:"Hot chocolate"}
       },
 
       {
         id:"ds1", cat:"ds", p: 8.50,
         i: "/images/sansebastian.png",
-        tr:{n:"San Sebastian", d:"İçi akışkan, orijinal Bask tarifi yanık cheesecake."},
-        en:{n:"San Sebastian", d:"Creamy, original Basque burnt cheesecake."},
+        tr:{
+          n:"San Sebastian",
+          d:"İçi akışkan, orijinal Bask tarifi yanık cheesecake.",
+          ld:"Üzeri karamelize olmuş dış kabuk ve kremsi iç; İspanya’nın Bask bölgesinden gelen özgün tarif. Yanında çilek sos önerilir."
+        },
+        en:{
+          n:"San Sebastian",
+          d:"Creamy, original Basque burnt cheesecake.",
+          ld:"Caramelized exterior crust with a creamy center; authentic recipe from Spain’s Basque region. Best with strawberry coulis on the side."
+        },
         alt:{tr:"San Sebastian cheesecake", en:"Basque burnt cheesecake"}
       },
       {
         id:"ds2", cat:"ds", p: 7.50,
         i: "/images/pistachiotiramisu.png",
-        tr:{n:"Pistachio Tiramisu", d:"Antep fıstıklı krema ve yoğun espresso dokunuşu."},
-        en:{n:"Pistachio Tiramisu", d:"Pistachio cream with an intense espresso touch."},
+        tr:{
+          n:"Pistachio Tiramisu",
+          d:"Antep fıstıklı krema ve yoğun espresso dokunuşu.",
+          ld:"Klasik tiramisu kremasına Antep fıstığı ezmesi eklenir; katmanlar arasında espresso emdirilmiş kedi dili. Görsel olarak da yeşil tonları ile çekici."
+        },
+        en:{
+          n:"Pistachio Tiramisu",
+          d:"Pistachio cream with an intense espresso touch.",
+          ld:"Classic tiramisu cream enhanced with pistachio paste; layers of ladyfinger soaked in espresso. Visually appealing with green hues."
+        },
         alt:{tr:"Fıstıklı tiramisu", en:"Pistachio tiramisu"}
       },
       {
         id:"ds3", cat:"ds", p: 6.80,
         i: "/images/belçikabrownie.png",
-        tr:{n:"Belçika Brownie", d:"Sıcak servis edilen, %70 bitter çikolatalı ve cevizli."},
-        en:{n:"Belgian Brownie", d:"Served warm, 70% dark chocolate and walnuts."},
+        tr:{
+          n:"Belçika Brownie",
+          d:"Sıcak servis edilen, %70 bitter çikolatalı ve cevizli.",
+          ld:"İçi yumuşacık, dışı hafif çıtır; Belçika’dan gelen yoğun kakao ve kıtır ceviz parçalarıyla dolu. Fırından çıktıktan sonra vanilya dondurma ile şahane."
+        },
+        en:{
+          n:"Belgian Brownie",
+          d:"Served warm, 70% dark chocolate and walnuts.",
+          ld:"Soft inside, slightly crisp outside; loaded with rich Belgian cocoa and crunchy walnuts. Great with vanilla ice cream after baking."
+        },
         alt:{tr:"Brownie", en:"Brownie"}
       },
       {
         id:"ds4", cat:"ds", p: 9.00,
         i: "/images/lotusbiscoffcake.png",
-        tr:{n:"Lotus Biscoff Cake", d:"Lotus bisküvi tabanlı, karamelli ve ipeksi krema."},
-        en:{n:"Lotus Biscoff Cake", d:"Lotus biscuit base, caramel and silky cream."},
+        tr:{
+          n:"Lotus Biscoff Cake",
+          d:"Lotus bisküvi tabanlı, karamelli ve ipeksi krema.",
+          ld:"Karamelize Lotus bisküvisi taban, üzerine yumuşak biscoff kreması; hafif tarçın aroması ve çikolata kırıntıları ile servis edilir."
+        },
+        en:{
+          n:"Lotus Biscoff Cake",
+          d:"Lotus biscuit base, caramel and silky cream.",
+          ld:"Caramelized Lotus biscuit base topped with smooth biscoff cream; served with a hint of cinnamon and chocolate shards."
+        },
         alt:{tr:"Lotus Biscoff pasta", en:"Lotus Biscoff cake"}
       },
       {
         id:"ds5", cat:"ds", p: 8.20,
         i: "/images/limonmerengtart.png",
-        tr:{n:"Limon Mereng Tart", d:"Ekşi limon kreması ve fırınlanmış beze."},
-        en:{n:"Lemon Meringue", d:"Tangy lemon curd and toasted meringue."},
+        tr:{
+          n:"Limon Mereng Tart",
+          d:"Ekşi limon kreması ve fırınlanmış beze.",
+          ld:"Kıtır tart hamuru içinde canlı, ekşi limon krema; üzerine ince fırınlanmış mereng. Her ısırıkta tatlı-ekşi dansı."
+        },
+        en:{
+          n:"Lemon Meringue",
+          d:"Tangy lemon curd and toasted meringue.",
+          ld:"A vibrant tart shell filled with zesty lemon curd; topped with lightly toasted meringue. Sweet-tart dance in every bite."
+        },
         alt:{tr:"Limon mereng", en:"Lemon meringue tart"}
       },
       {
         id:"ds6", cat:"ds", p: 7.00,
         i: "/images/macaronselection.png",
-        tr:{n:"Macaron Selection", d:"4 adet; Fıstık, Lavanta, Frambuaz ve Çikolata."},
-        en:{n:"Macaron Selection", d:"4 pieces; Pistachio, Lavender, Raspberry, Chocolate."},
+        tr:{
+          n:"Macaron Selection",
+          d:"4 adet; Fıstık, Lavanta, Frambuaz ve Çikolata.",
+          ld:"İnce kabuk, yumuşak iç; her bir macaron farklı aromada. El yapımı ve taze, yanında çay veya kahve önerilir."
+        },
+        en:{
+          n:"Macaron Selection",
+          d:"4 pieces; Pistachio, Lavender, Raspberry, Chocolate.",
+          ld:"Thin shell, soft interior; each macaron offers a different flavor. Handmade and fresh, best enjoyed with tea or coffee."
+        },
         alt:{tr:"Macaron", en:"Macarons"}
       },
       {
         id:"ds7", cat:"ds", p: 7.80,
         i: "/images/ormanmeyvelitart.png",
-        tr:{n:"Orman Meyveli Tart", d:"Çıtır taban, pastacı kreması ve taze meyveler."},
-        en:{n:"Mixed Berry Tart", d:"Crunchy base, pastry cream and fresh berries."},
+        tr:{
+          n:"Orman Meyveli Tart",
+          d:"Çıtır taban, pastacı kreması ve taze meyveler.",
+          ld:"Kabak çekirdeği ve badem unlu çıtır taban; hafif vanilyalı pastacı kreması ve üzerinde çilek, böğürtlen, ahududu gibi meyve patlaması."
+        },
+        en:{
+          n:"Mixed Berry Tart",
+          d:"Crunchy base, pastry cream and fresh berries.",
+          ld:"Crunchy base made with pumpkin seeds and almond flour; light vanilla pastry cream topped with strawberries, blackberries, raspberries for a fruity burst."
+        },
         alt:{tr:"Meyveli tart", en:"Berry tart"}
       },
       {
         id:"ds8", cat:"ds", p: 8.00,
         i: "/images/applegalette.png",
-        tr:{n:"Apple Galette", d:"Tarçınlı elma dilimleri ve karamel sos."},
-        en:{n:"Apple Galette", d:"Cinnamon apple slices and caramel sauce."},
+        tr:{
+          n:"Apple Galette",
+          d:"Tarçınlı elma dilimleri ve karamel sos.",
+          ld:"Rustik açılmış hamur içinde böğürtlenli tarçınlı elma dilimleri; üzeri hafif şekerle kaplı ve sıcak karamel sos eşliğinde sunulur."
+        },
+        en:{
+          n:"Apple Galette",
+          d:"Cinnamon apple slices and caramel sauce.",
+          ld:"Rustic folded pastry filled with cinnamon-spiced apple slices; dusted with sugar and served warm with caramel sauce."
+        },
         alt:{tr:"Elmalı galette", en:"Apple galette"}
       },
 
@@ -977,119 +1218,247 @@
       {
         id:"bd1", cat:"bd", p: 4.50,
         i: "https://images.unsplash.com/photo-1517701550927-30cf4ba53dba?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Iced Latte", d:"Soğuk süt ve çift shot espresso."},
-        en:{n:"Iced Latte", d:"Cold milk and double shot espresso."},
+        tr:{
+          n:"Iced Latte",
+          d:"Soğuk süt ve çift shot espresso.",
+          ld:"Buz dolu bardakta soğuk süt ve hızlı servis edilen çift shot espresso; yaz günleri için ferahlatıcı ve güçlü."
+        },
+        en:{
+          n:"Iced Latte",
+          d:"Cold milk and double shot espresso.",
+          ld:"Double shot espresso over cold milk in a glass filled with ice; refreshing and strong for summer days."
+        },
         alt:{tr:"Iced latte", en:"Iced latte"}
       },
       {
         id:"bd2", cat:"bd", p: 5.50,
-        i: "https://images.unsplash.com/photo-1590080876814-c1400ca199e6?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Matcha Smoothie", d:"Taze matcha, muz ve hindistan cevizi sütü."},
-        en:{n:"Matcha Smoothie", d:"Fresh matcha, banana and coconut milk."},
+        i: "/images/icedlemontea.png",
+        tr:{
+          n:"Matcha Smoothie",
+          d:"Taze matcha, muz ve hindistan cevizi sütü.",
+          ld:"Yeşil matcha tozu, muz ve doğal hindistancevizi sütü blender’dan geçirilir; enerji verirken serinletir."
+        },
+        en:{
+          n:"Matcha Smoothie",
+          d:"Fresh matcha, banana and coconut milk.",
+          ld:"Green matcha powder blended with banana and natural coconut milk; energizing yet cooling."
+        },
         alt:{tr:"Matcha smoothie", en:"Matcha smoothie"}
       },
       {
         id:"bd3", cat:"bd", p: 5.00,
-        i: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Cold Brew", d:"Soğuk demlenmiş %100 Arabica kahve."},
-        en:{n:"Cold Brew", d:"Cold brewed 100% Arabica coffee."},
+        i: "/images/oreomilkshake.png",
+        tr:{
+          n:"Cold Brew",
+          d:"Soğuk demlenmiş %100 Arabica kahve.",
+          ld:"12 saat soğuk suda demlenmiş yoğun Arabica; buzla servis edilir, asidite düşürülmüş ve tatlı notalar ortaya çıkar."
+        },
+        en:{
+          n:"Cold Brew",
+          d:"Cold brewed 100% Arabica coffee.",
+          ld:"Arabica brewed in cold water for 12 hours; served over ice, with reduced acidity and sweet notes emerging."
+        },
         alt:{tr:"Cold brew kahve", en:"Cold brew coffee"}
       },
       {
         id:"bd4", cat:"bd", p: 6.00,
         i: "https://images.unsplash.com/photo-1437003220eed7b733f44e962b8fce1c7e4e481b?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Çilek Milkshake", d:"Taze çilek, vanilya ve kayıp cream."},
-        en:{n:"Strawberry Milkshake", d:"Fresh strawberry, vanilla and whipped cream."},
+        tr:{
+          n:"Çilek Milkshake",
+          d:"Taze çilek, vanilya ve kayıp cream.",
+          ld:"Dondurulmuş taze çilek, vanilyalı dondurma ve krema blender’dan geçirilir; kalın, tatlı ve serinletici."
+        },
+        en:{
+          n:"Strawberry Milkshake",
+          d:"Fresh strawberry, vanilla and whipped cream.",
+          ld:"Frozen fresh strawberries, vanilla ice cream and cream blended; thick, sweet and refreshing."
+        },
         alt:{tr:"Çilek milkshake", en:"Strawberry milkshake"}
       },
       {
         id:"bd5", cat:"bd", p: 5.20,
-        i: "https://images.unsplash.com/photo-1610632823901-ba3c1826fbf9?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Iced Americano", d:"Soğuk espresso ve buz, temiz ve güçlü."},
-        en:{n:"Iced Americano", d:"Cold espresso and ice, clean and strong."},
+        i: "/images/icedamericano.png",
+        tr:{
+          n:"Iced Americano",
+          d:"Soğuk espresso ve buz, temiz ve güçlü.",
+          ld:"Temiz su ve espresso karışımı buz dolu bardakta; serinletici, net tat ve yoğun kafein."
+        },
+        en:{
+          n:"Iced Americano",
+          d:"Cold espresso and ice, clean and strong.",
+          ld:"Espresso mixed with cold water over ice; refreshing, crisp flavor with a strong caffeine kick."
+        },
         alt:{tr:"Iced Americano", en:"Iced Americano"}
       },
       {
         id:"bd6", cat:"bd", p: 5.50,
         i: "https://images.unsplash.com/photo-1582798902529-2c0d648eca4c?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Mango Smoothie", d:"Taze mango, muz, hindistan cevizi sütü."},
-        en:{n:"Mango Smoothie", d:"Fresh mango, banana, coconut milk."},
+        tr:{
+          n:"Mango Smoothie",
+          d:"Taze mango, muz, hindistan cevizi sütü.",
+          ld:"Olgun mango, muz ve kremsi hindistan cevizi sütü pürüzsüz bir karışım haline getirilir; tropikal bir kaçamak."
+        },
+        en:{
+          n:"Mango Smoothie",
+          d:"Fresh mango, banana, coconut milk.",
+          ld:"Ripe mango blended with banana and creamy coconut milk; a tropical escape."
+        },
         alt:{tr:"Mango smoothie", en:"Mango smoothie"}
       },
       {
         id:"bd7", cat:"bd", p: 5.80,
         i: "https://images.unsplash.com/photo-1590301157890-4810ed352733?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Açai Bowl", d:"Açai berry, muesli, granola ve taze meyveler."},
-        en:{n:"Acai Bowl", d:"Acai berry, muesli, granola and fresh fruits."},
+        tr:{
+          n:"Açai Bowl",
+          d:"Açai berry, muesli, granola ve taze meyveler.",
+          ld:"Antioksidan deposu açai püresi tabanı; üzerinde muesli, granola, muz ve yaban mersini. Enerji için ideal."
+        },
+        en:{
+          n:"Acai Bowl",
+          d:"Acai berry, muesli, granola and fresh fruits.",
+          ld:"Antioxidant-rich acai puree base topped with muesli, granola, banana and blueberries. Ideal for energy."
+        },
         alt:{tr:"Acai bowl", en:"Acai bowl"}
       },
       {
         id:"bd8", cat:"bd", p: 6.20,
         i: "https://images.unsplash.com/photo-1517701550927-30cf4ba53dba?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Iced Cappuccino", d:"Soğuk cappuccino, köpüklü ve kremsi."},
-        en:{n:"Iced Cappuccino", d:"Cold cappuccino, foamy and creamy."},
+        tr:{
+          n:"Iced Cappuccino",
+          d:"Soğuk cappuccino, köpüklü ve kremsi.",
+          ld:"Soğuk süt ve espresso karışımı üzerine ferahlatıcı köpük; yaz günleri için serinletici, hafif kahveli tat."
+        },
+        en:{
+          n:"Iced Cappuccino",
+          d:"Cold cappuccino, foamy and creamy.",
+          ld:"A cool blend of milk and espresso topped with refreshing foam; perfect for warm days with a light coffee flavor."
+        },
         alt:{tr:"Iced cappuccino", en:"Iced cappuccino"}
       },
       {
         id:"bd9", cat:"bd", p: 5.90,
         i: "https://images.unsplash.com/photo-1599599810694-b5ac4dd11b10?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Limon Buzlu Çay", d:"Taze limon, soğuk demlenmiş çay ve buz."},
-        en:{n:"Iced Lemon Tea", d:"Fresh lemon, cold brewed tea and ice."},
+        tr:{
+          n:"Limon Buzlu Çay",
+          d:"Taze limon, soğuk demlenmiş çay ve buz.",
+          ld:"Kendi demlenen çay üzerine taze sıkılmış limon suyu ve buz eklenir; ferahlatıcı ve hafif ekşimsi."
+        },
+        en:{
+          n:"Iced Lemon Tea",
+          d:"Fresh lemon, cold brewed tea and ice.",
+          ld:"Cold-brewed tea with freshly squeezed lemon juice and ice; refreshing with a subtle tartness."
+        },
         alt:{tr:"Limon çay", en:"Lemon tea"}
       },
       {
         id:"bd10", cat:"bd", p: 6.50,
         i: "https://images.unsplash.com/photo-1553530666-ba2a8e36c6f4?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Oreo Milkshake", d:"Oreo, vanilya ve taze süt karışımı."},
-        en:{n:"Oreo Milkshake", d:"Oreo, vanilla and fresh milk blend."},
+        tr:{
+          n:"Oreo Milkshake",
+          d:"Oreo, vanilya ve taze süt karışımı.",
+          ld:"Kremalı vanilyalı dondurma, taze süt ve parçalanmış Oreo bisküvisi blender’dan geçirilir; üstü ekstra crumble ile süslenir."
+        },
+        en:{
+          n:"Oreo Milkshake",
+          d:"Oreo, vanilla and fresh milk blend.",
+          ld:"Creamy vanilla ice cream, fresh milk and crushed Oreo cookies blended; topped with extra cookie crumbles."
+        },
         alt:{tr:"Oreo milkshake", en:"Oreo milkshake"}
       },
 
       // SALATALAR (SL)
       {
         id:"sl1", cat:"sl", p: 12.50,
-        i: "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Sezar Salatası", d:"Romaine, parmesan, crouton ve sezar sos."},
-        en:{n:"Caesar Salad", d:"Romaine, parmesan, croutons and caesar dressing."},
+        i: "/images/salad.png",
+        tr:{
+          n:"Sezar Salatası",
+          d:"Romaine, parmesan, crouton ve sezar sos.",
+          ld:"Taze romaine marul, ev yapımı kruton, rendelenmiş parmesan ve klasik Sezar sosu; üzerine istiridye soslu tavuk dilimi eklenebilir."
+        },
+        en:{
+          n:"Caesar Salad",
+          d:"Romaine, parmesan, croutons and caesar dressing.",
+          ld:"Fresh romaine lettuce, homemade croutons, grated parmesan and classic Caesar dressing; optionally topped with oyster-sauce chicken slices."
+        },
         alt:{tr:"Sezar salatası", en:"Caesar salad"}
       },
       {
         id:"sl2", cat:"sl", p: 11.00,
-        i: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Yunan Salatası", d:"Domates, salatalık, mozzarella ve zeytin."},
-        en:{n:"Greek Salad", d:"Tomato, cucumber, mozzarella and olives."},
+        i: "/images/salad.png",
+        tr:{
+          n:"Yunan Salatası",
+          d:"Domates, salatalık, mozzarella ve zeytin.",
+          ld:"Izgara biber, soğan ve taze kekik ile desteklenmiş klasik Yunan salatası; sızma zeytinyağı ve limon suyu ile tatlandırılır."
+        },
+        en:{
+          n:"Greek Salad",
+          d:"Tomato, cucumber, mozzarella and olives.",
+          ld:"Classic Greek salad enhanced with grilled peppers, onion and fresh oregano; dressed with extra virgin olive oil and lemon juice."
+        },
         alt:{tr:"Yunan salatası", en:"Greek salad"}
       },
       {
         id:"sl3", cat:"sl", p: 10.50,
-        i: "https://images.unsplash.com/photo-1587025208546-0c5516c0f01b?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Caprese Salata", d:"Domates, mozzarella, fesleğen ve balsamik."},
-        en:{n:"Caprese Salad", d:"Tomato, mozzarella, basil and balsamic."},
+        i: "/images/salad.png",
+        tr:{
+          n:"Caprese Salata",
+          d:"Domates, mozzarella, fesleğen ve balsamik.",
+          ld:"Olgun domates dilimleri ve taze mozzarella; üzerine sızma zeytinyağı, taze fesleğen ve balsamik sirke gezdirilir."
+        },
+        en:{
+          n:"Caprese Salad",
+          d:"Tomato, mozzarella, basil and balsamic.",
+          ld:"Slices of ripe tomato and fresh mozzarella; drizzled with extra virgin olive oil, fresh basil and balsamic vinegar."
+        },
         alt:{tr:"Caprese salatası", en:"Caprese salad"}
       },
 
       // ZUSÄTZLICHE SANDWICHES
       {
         id:"sn4", cat:"sn", p: 12.00,
-        i: "https://images.unsplash.com/photo-1585238341710-57c0cda9d7a5?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Vegan Wrap", d:"Humus, sebzeler ve tahini sos."},
-        en:{n:"Vegan Wrap", d:"Hummus, vegetables and tahini sauce."},
+        i: "/images/veganwrap.png",
+        tr:{
+          n:"Vegan Wrap",
+          d:"Humus, sebzeler ve tahini sos.",
+          ld:"Taze sebzeler, humus ve çıtır yeşillik; tam tahıllı tortilla içinde dürüm şeklinde. Yanında tahini yıllı sos ile servis edilir."
+        },
+        en:{
+          n:"Vegan Wrap",
+          d:"Hummus, vegetables and tahini sauce.",
+          ld:"Fresh vegetables, hummus and crunchy greens wrapped in a whole-grain tortilla. Served with a tahini dressing."
+        },
         alt:{tr:"Vegan wrap", en:"Vegan wrap"}
       },
 
       // ADDITIONAL BREAKFAST
       {
         id:"br5", cat:"br", p: 10.00,
-        i: "https://images.unsplash.com/photo-1586985289688-cacf919ca042?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"French Croissant", d:"Tereyağı ve çikolatalı katmanlı."},
-        en:{n:"French Croissant", d:"Buttery and chocolate layered."},
+        i: "/images/frenchcroissant.png",
+        tr:{
+          n:"French Croissant",
+          d:"Tereyağı ve çikolatalı katmanlı.",
+          ld:"Katman katman fırından çıkmış, tereyağlı hamur; içi çikolata dolu, dışı çıtır. Kahvaltıya mükemmel eşlikçi."
+        },
+        en:{
+          n:"French Croissant",
+          d:"Buttery and chocolate layered.",
+          ld:"Buttery pastry fresh from the oven in layers; chocolate filled inside with a crisp exterior. Perfect breakfast companion."
+        },
         alt:{tr:"Croissant", en:"Croissant"}
       },
       {
         id:"br6", cat:"br", p: 11.00,
-        i: "https://images.unsplash.com/photo-1567521464027-f127ff144326?auto=format&fit=crop&w=600&q=75",
-        tr:{n:"Aç Kahvaltı", d:"Pastırma, beyaz peynir, zeytin ve domates."},
-        en:{n:"Hearty Breakfast", d:"Bacon, white cheese, olives and tomato."},
+        i: "/images/heartybreakfast.png",
+        tr:{
+          n:"Aç Kahvaltı",
+          d:"Pastırma, beyaz peynir, zeytin ve domates.",
+          ld:"Bol proteinli kahvaltı tabağı; pastırma, beyaz peynir, zeytin, domates ve taze ekmek. Enerji dolu bir başlangıç."
+        },
+        en:{
+          n:"Hearty Breakfast",
+          d:"Bacon, white cheese, olives and tomato.",
+          ld:"Protein-packed breakfast plate; bacon, white cheese, olives, tomato and fresh bread. An energizing start."
+        },
         alt:{tr:"Aç başlayan", en:"Hearty breakfast"}
       }
     ];
@@ -1340,7 +1709,7 @@
       const catName = t.categories?.[p.cat] || "";
 
       return `
-        <article class="card">
+        <article class="card" data-id="${p.id}">
           <div class="card-badge-area">
             <span class="badge">${catName}</span>
           </div>
@@ -1380,8 +1749,13 @@
     }
 
     // generate small thumbnail URL for cart to save bandwidth
-    function getThumbUrl(src){
+    function getThumbUrl(src, p){
+      // preferentially generate query from product name when source is unsplash
       if(typeof src === "string" && src.startsWith("https://images.unsplash.com")){
+        if(p && p[currentLang] && p[currentLang].n){
+          const q = encodeURIComponent(p[currentLang].n);
+          return `https://source.unsplash.com/600x600/?${q}`;
+        }
         return src.replace(/w=\d+/g, "w=200");
       }
       return src;
@@ -1410,7 +1784,7 @@
 
         html += `
           <div class="cart-item" data-id="${id}">
-            <img src="${getThumbUrl(p.i)}" alt="${p.alt?.[currentLang] || name}" loading="lazy">
+            <img src="${getThumbUrl(p.i,p)}" alt="${p.alt?.[currentLang] || name}" loading="lazy">
             <div>
               <div class="ci-title">${name}</div>
               <div class="ci-desc">${desc}</div>
@@ -1568,14 +1942,64 @@
       else if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
     }
 
+    // ------------- product modal helpers --------------------
+    const productModal = document.getElementById("productModal");
+    const productBackdrop = document.getElementById("productBackdrop");
+
+    function renderProductModalBody(id){
+      const p = productById[id];
+      if(!p) return;
+      const item = p[currentLang] || {};
+      const name = item.n || "";
+      const desc = item.d || "";
+      const longDesc = item.ld || ""; // uzun açıklama (isteğe bağlı)
+      const price = formatMoney(p.p);
+      const imgUrl = getThumbUrl(p.i, p);
+      const alt = p.alt?.[currentLang] || name;
+      document.getElementById("productBody").innerHTML = `
+        <div class="product-modal-detail">
+          <img src="${imgUrl}" alt="${alt}" loading="lazy" style="max-width:100%;margin-bottom:12px;">
+          <h3 style="margin:0 0 8px;">${name}</h3>
+          <p style="margin:0 0 12px;color:var(--muted);">${desc}</p>
+          ${longDesc ? `<p style="margin:0 0 12px;">${longDesc}</p>` : ``}
+          <div style="font-weight:900;">${price}</div>
+        </div>
+      `;
+    }
+
+    function openProductModal(id){
+      lastFocusEl = document.activeElement;
+      if(!productById[id]) return;
+      const titleEl = document.getElementById("productModalTitle");
+      const item = productById[id][currentLang] || {};
+      titleEl.innerText = item.n || "";
+      // make aria-label meaningful as well
+      productModal.setAttribute("aria-label", item.n || "Ürün");
+      renderProductModalBody(id);
+      productModal.classList.add("open");
+      productBackdrop.classList.add("open");
+      productModal.focus();
+      const first = productModal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
+      if(first) first.focus();
+    }
+    function closeProductModal(){
+      productModal.classList.remove("open");
+      productBackdrop.classList.remove("open");
+      if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+    }
+
     // =========================================================
     // (EKLENDİ) Modal focus trap (Tab içinde kalsın)
     // =========================================================
     function trapFocusInModal(e){
-      if(!cartModal.classList.contains("open")) return;
+      // if neither modal is visible, nothing to trap
+      const activeModal = cartModal.classList.contains("open") ? cartModal
+                        : (productModal.classList.contains("open") ? productModal
+                         : null);
+      if(!activeModal) return;
       if(e.key !== "Tab") return;
 
-      const focusables = cartModal.querySelectorAll(
+      const focusables = activeModal.querySelectorAll(
         'button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])'
       );
       if(!focusables.length) return;
@@ -1635,6 +2059,13 @@
     // Events
     // ----------------------------
     document.addEventListener("click", (e) => {
+      // detay için ürün kartına tıklanmış mı?
+      const cardEl = e.target.closest("article.card[data-id]");
+      if(cardEl && !e.target.closest("[data-add]")){
+        openProductModal(cardEl.getAttribute("data-id"));
+        return;
+      }
+
       const addBtn = e.target.closest("[data-add]");
       if(addBtn){
         addToCart(addBtn.getAttribute("data-add"));
@@ -1713,6 +2144,10 @@
     document.getElementById("cartClose").addEventListener("click", closeCart);
     cartBackdrop.addEventListener("click", closeCart);
 
+    // product modal controls
+    document.getElementById("productClose").addEventListener("click", closeProductModal);
+    productBackdrop.addEventListener("click", closeProductModal);
+
     document.getElementById("clearCartBtn").addEventListener("click", clearCart);
     document.getElementById("waSendBtn").addEventListener("click", sendToWhatsApp);
 
@@ -1739,6 +2174,7 @@
       if(e.key === "Escape"){
         closeDrawer();
         closeCart();
+        closeProductModal();
       }
       trapFocusInModal(e);
     });
