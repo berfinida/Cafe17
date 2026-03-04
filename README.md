@@ -1,8 +1,8 @@
 # Cafe17 Website
 
-Modern and responsive cafe menu website built with HTML, CSS, and Vanilla JavaScript.
-
 ![Cafe17 Preview](preview.png)
+
+Modern and responsive cafe menu website built with HTML, CSS, and Vanilla JavaScript.
 
 ## Live Demo
 
