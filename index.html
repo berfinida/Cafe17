@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="description" content="Cafe 17 | Gourmet & Patisserie Menu" />
   <title>Cafe 17 | Gourmet & Patisserie</title>
+  <link rel="icon" type="image/png" href="favicon.png" />
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -101,7 +102,7 @@
     .hero h1{ 
       font-family:"Playfair Display",serif; 
       font-size:clamp(25px,5vw,48px); 
-      color:#fff; /* CAFE 17 now white */
+      color:var(--gold);
       position:relative;
       z-index:1;
       animation:fadeInDown 0.8s ease;
@@ -331,16 +332,21 @@
     .drawer-backdrop{
       position:fixed; inset:0; background:rgba(0,0,0,0.15);
       display:none; z-index:2500;
+      opacity:0;
+      transition:opacity 0.3s ease;
+    }
+    .drawer-backdrop.open{
+      display:block;
+      opacity:1;
     }
     .drawer{
       position:fixed; top:0; right:-380px; height:100%; width:min(380px, 86vw);
       background:var(--panel); border-left:1px solid rgba(184,134,11,0.25);
       z-index:2600; padding:18px;
-      transition:0.25s ease;
+      transition:right 0.35s cubic-bezier(0.23, 1, 0.320, 1);
       display:flex; flex-direction:column; gap:12px;
     }
     .drawer.open{ right:0; }
-    .drawer-backdrop.open{ display:block; }
     .drawer .drawer-top{
       display:flex; justify-content:space-between; align-items:center;
       padding-bottom:10px; border-bottom:1px solid #e0e0e0;
@@ -528,6 +534,171 @@
     @media (max-width:480px){
       .grid{ grid-template-columns:repeat(auto-fill, minmax(120px, 1fr)); gap:8px; }
       .card-content p{ font-size:9px; }
+    }
+
+    /* =========================================================
+       ENHANCED PRODUCT MODAL STYLES
+       ========================================================= */
+    .product-modal-detail {
+      display: grid;
+      gap: 16px;
+    }
+    .product-modal-detail .pm-image {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 12px;
+      animation: modalImageZoom 0.4s ease;
+    }
+    @keyframes modalImageZoom {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+    .product-modal-detail h3 {
+      font-family: "Playfair Display", serif;
+      font-size: 24px;
+      color: var(--gold);
+      margin: 0;
+    }
+    .product-modal-detail .pm-price {
+      font-size: 22px;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--gold), #e8c547);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .product-modal-detail .pm-desc {
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+    .product-modal-detail .pm-long-desc {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 1.7;
+      padding: 12px;
+      background: #fafafa;
+      border-radius: 10px;
+      border-left: 3px solid var(--gold);
+    }
+    .product-modal-detail .pm-allergens {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 12px;
+      background: #fff5e6;
+      border-radius: 10px;
+      border: 1px solid rgba(184,134,11,0.2);
+    }
+    .product-modal-detail .pm-allergens-title {
+      width: 100%;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--gold);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+    .product-modal-detail .pm-allergen-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 10px;
+      background: white;
+      border: 1px solid var(--gold);
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .product-modal-detail .pm-allergen-badge .allergen-icon {
+      font-size: 10px;
+    }
+    .product-modal-detail .pm-add-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 24px;
+      background: var(--gold);
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.23, 1, 0.320, 1);
+    }
+    .product-modal-detail .pm-add-btn:hover {
+      transform: scale(1.02);
+      box-shadow: 0 8px 25px rgba(184,134,11,0.4);
+    }
+    .product-modal-detail .pm-add-btn.added {
+      background: #4CAF50;
+    }
+
+    /* =========================================================
+       STAGGERED GRID ANIMATION
+       ========================================================= */
+    .grid .card {
+      opacity: 0;
+      animation: cardFadeInUp 0.5s ease forwards;
+    }
+    @keyframes cardFadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* =========================================================
+       ADD TO CART BUTTON ANIMATION
+       ========================================================= */
+    .btn-add.adding {
+      animation: addBtnPulse 0.4s ease;
+    }
+    @keyframes addBtnPulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.15); background: var(--gold); color: #000; }
+      100% { transform: scale(1); }
+    }
+    .btn-add.added {
+      background: var(--gold);
+      color: #000;
+    }
+
+    /* =========================================================
+       CART FLOAT BUMP ANIMATION
+       ========================================================= */
+    .cart-float.bump {
+      animation: cartBump 0.4s ease;
+    }
+    @keyframes cartBump {
+      0%, 100% { transform: scale(1); }
+      25% { transform: scale(1.2); }
+      50% { transform: scale(0.95); }
+      75% { transform: scale(1.1); }
+    }
+
+    /* =========================================================
+       FILTER CHANGE ANIMATION
+       ========================================================= */
+    .grid.refreshing {
+      opacity: 0.5;
+      pointer-events: none;
     }
   </style>
 </head>
@@ -764,7 +935,6 @@
         waSend: "Send to WhatsApp",
         searchLabel: "Search",
         searchPH: "Search items... (e.g. tiramisu, v60)",
-        searchHint: "Tip: Search matches names and descriptions",
         catLabel: "Category",
         sortLabel: "Sort",
         all: "All",
@@ -863,7 +1033,7 @@
   },
   {
     id:"sn2", cat:"sn", p:11.00,
-    i:"https://images.unsplash.com/photo-1528735602780-2552fd46c7af?auto=format&fit=crop&w=1200&q=75",
+    i:"https://images.unsplash.com/photo-1484723091739-30a097e8f929?auto=format&fit=crop&w=1200&q=75",
     tr:{
       n:"Dört Peynirli Tost",
       d:"Mozzarella, çedar, parmesan ve rokfor.",
@@ -1229,6 +1399,14 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
     // Money / helpers
     // ----------------------------
     function clampQty(n){ return Math.max(0, Math.min(99, n)); }
+    function escapeHtml(v){
+      return String(v ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
 
     function getSymbol(){
       return currency === "TRY" ? "₺" : "€";
@@ -1415,25 +1593,31 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
       const name = item?.n ?? "";
       const desc = item?.d ?? "";
       const altText = p.alt?.[currentLang] || name;
+      const safeName = escapeHtml(name);
+      const safeDesc = escapeHtml(desc);
+      const safeAlt = escapeHtml(altText);
       const t = translations[currentLang];
       const catName = t.categories?.[p.cat] || "";
+      const safeCatName = escapeHtml(catName);
+      const cardAria = `${name} - ${desc} - ${formatMoney(p.p)}`;
+      const safeCardAria = escapeHtml(cardAria);
 
       return `
-        <article class="card" data-id="${p.id}">
+        <article class="card" data-id="${p.id}" role="button" tabindex="0" aria-label="${safeCardAria}">
           <div class="card-badge-area">
-            <span class="badge">${catName}</span>
+            <span class="badge">${safeCatName}</span>
           </div>
           <div class="img-skeleton" aria-hidden="true"></div>
           <img
             src="${p.i}"
             class="card-img"
             loading="lazy"
-            alt="${altText}"
+            alt="${safeAlt}"
             data-fallback="${FALLBACK_IMG}"
           >
           <div class="card-content">
-            <h3>${name}</h3>
-            <p>${desc}</p>
+            <h3>${safeName}</h3>
+            <p>${safeDesc}</p>
             <div class="card-footer">
               <span class="price">${formatMoney(p.p)}</span>
               <button class="btn-add" type="button" data-add="${p.id}">${translations[currentLang].add}</button>
@@ -1462,11 +1646,9 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
     function getThumbUrl(src, p){
       // preferentially generate query from product name when source is unsplash
       if(typeof src === "string" && src.startsWith("https://images.unsplash.com")){
-        if(p && p[currentLang] && p[currentLang].n){
-          const q = encodeURIComponent(p[currentLang].n);
-          return `https://source.unsplash.com/600x600/?${q}`;
-        }
-        return src.replace(/w=\d+/g, "w=200");
+        // Fix: source.unsplash.com is deprecated, use images.unsplash.com with specific ID
+        // For cart thumbnails, just resize the original image
+        return src.replace(/w=\d+/g, "w=200").replace(/q=\d+/g, "q=70");
       }
       return src;
     }
@@ -1522,12 +1704,30 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
     // ----------------------------
     // Cart actions
     // ----------------------------
-    function addToCart(id){
+    function addToCart(id, sourceBtn = null){
       if(!productById[id]) return;
       cart[id] = clampQty((Number(cart[id])||0) + 1);
       saveCart();
       updateCartUI();
       renderCartModalBody();
+
+      if(sourceBtn){
+        sourceBtn.classList.remove("adding");
+        sourceBtn.classList.remove("added");
+        void sourceBtn.offsetWidth;
+        sourceBtn.classList.add("adding");
+        sourceBtn.classList.add("added");
+        setTimeout(() => sourceBtn.classList.remove("adding"), 420);
+        setTimeout(() => sourceBtn.classList.remove("added"), 900);
+      }
+
+      const cartFloat = document.getElementById("cartFloat");
+      if(cartFloat){
+        cartFloat.classList.remove("bump");
+        void cartFloat.offsetWidth;
+        cartFloat.classList.add("bump");
+        setTimeout(() => cartFloat.classList.remove("bump"), 420);
+      }
     }
 
     function setQty(id, qty){
@@ -1638,6 +1838,8 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
       lastFocusEl = document.activeElement;
       cartModal.classList.add("open");
       cartBackdrop.classList.add("open");
+      cartModal.setAttribute("aria-hidden", "false");
+      cartBackdrop.setAttribute("aria-hidden", "false");
       cartModal.focus();
       // (EKLENDİ) try to focus first meaningful control
       const first = cartModal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
@@ -1646,10 +1848,12 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
     function closeCart(){
       cartModal.classList.remove("open");
       cartBackdrop.classList.remove("open");
+      cartModal.setAttribute("aria-hidden", "true");
+      cartBackdrop.setAttribute("aria-hidden", "true");
       // (EKLENDİ) restore focus to where it came from (prefer cartFloat)
       const cartFloat = document.getElementById("cartFloat");
-      if(cartFloat) cartFloat.focus();
-      else if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+      if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
+      else if(cartFloat) cartFloat.focus();
     }
 
     // ------------- product modal helpers --------------------
@@ -1666,13 +1870,29 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
       const price = formatMoney(p.p);
       const imgUrl = getThumbUrl(p.i, p);
       const alt = p.alt?.[currentLang] || name;
+      const safeName = escapeHtml(name);
+      const safeDesc = escapeHtml(desc);
+      const safeLongDesc = escapeHtml(longDesc);
+      const safeAlt = escapeHtml(alt);
+      const addText = escapeHtml(translations[currentLang].add);
+      const allergens = Array.isArray(p.allergens?.[currentLang]) ? p.allergens[currentLang] : [];
+      const allergenHtml = allergens.length
+        ? `
+          <div class="pm-allergens">
+            <div class="pm-allergens-title">${currentLang === "tr" ? "Alerjen Bilgisi" : "Allergen Info"}</div>
+            ${allergens.map(a => `<span class="pm-allergen-badge"><span class="allergen-icon">!</span>${escapeHtml(a)}</span>`).join("")}
+          </div>
+        `
+        : "";
       document.getElementById("productBody").innerHTML = `
         <div class="product-modal-detail">
-          <img src="${imgUrl}" alt="${alt}" loading="lazy" style="max-width:100%;margin-bottom:12px;">
-          <h3 style="margin:0 0 8px;">${name}</h3>
-          <p style="margin:0 0 12px;color:var(--muted);">${desc}</p>
-          ${longDesc ? `<p style="margin:0 0 12px;">${longDesc}</p>` : ``}
-          <div style="font-weight:900;">${price}</div>
+          <img src="${imgUrl}" class="pm-image" alt="${safeAlt}" loading="lazy">
+          <h3>${safeName}</h3>
+          <p class="pm-desc">${safeDesc}</p>
+          ${safeLongDesc ? `<p class="pm-long-desc">${safeLongDesc}</p>` : ``}
+          ${allergenHtml}
+          <div class="pm-price">${price}</div>
+          <button class="pm-add-btn" type="button" data-add-modal="${p.id}">${addText}</button>
         </div>
       `;
     }
@@ -1688,6 +1908,8 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
       renderProductModalBody(id);
       productModal.classList.add("open");
       productBackdrop.classList.add("open");
+      productModal.setAttribute("aria-hidden", "false");
+      productBackdrop.setAttribute("aria-hidden", "false");
       productModal.focus();
       const first = productModal.querySelector('button, [href], input, textarea, select, [tabindex]:not([tabindex="-1"])');
       if(first) first.focus();
@@ -1695,6 +1917,8 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
     function closeProductModal(){
       productModal.classList.remove("open");
       productBackdrop.classList.remove("open");
+      productModal.setAttribute("aria-hidden", "true");
+      productBackdrop.setAttribute("aria-hidden", "true");
       if(lastFocusEl && typeof lastFocusEl.focus === "function") lastFocusEl.focus();
     }
 
@@ -1778,7 +2002,13 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
 
       const addBtn = e.target.closest("[data-add]");
       if(addBtn){
-        addToCart(addBtn.getAttribute("data-add"));
+        addToCart(addBtn.getAttribute("data-add"), addBtn);
+        return;
+      }
+
+      const modalAddBtn = e.target.closest("[data-add-modal]");
+      if(modalAddBtn){
+        addToCart(modalAddBtn.getAttribute("data-add-modal"), modalAddBtn);
         return;
       }
 
@@ -1881,6 +2111,13 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
 
     // ESC to close drawer/cart + (EKLENDİ) focus trap Tab
     document.addEventListener("keydown", (e) => {
+      const cardEl = e.target?.closest?.("article.card[data-id]");
+      if(cardEl && (e.key === "Enter" || e.key === " ")){
+        e.preventDefault();
+        openProductModal(cardEl.getAttribute("data-id"));
+        return;
+      }
+
       if(e.key === "Escape"){
         closeDrawer();
         closeCart();
