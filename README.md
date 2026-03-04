@@ -25,10 +25,6 @@ https://berfinida.github.io/cafe17_website/
 - CSS3
 - Vanilla JavaScript
 
-## Screenshot
-
-![Cafe17 Screenshot](preview.png)
-
 ## Developer
 
 **Berfin Nida Ozturk**  
