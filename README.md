@@ -1,50 +1,35 @@
-# ☕ Cafe17 Website
+# Cafe17 Website
 
-A modern and responsive cafe website built with HTML, CSS, and JavaScript.
+Modern and responsive cafe menu website built with HTML, CSS, and Vanilla JavaScript.
 
-This project simulates a real cafe experience where users can:
+![Cafe17 Preview](preview.png)
 
-* Browse menu items
-* Search and filter products
-* Add items to cart
-* Send orders via WhatsApp
-* Switch language (TR / EN)
-* View prices in different currencies (TRY / EUR)
+## Live Demo
 
----
+https://berfinida.github.io/cafe17_website/
 
-## 🚀 Live Demo
+## Features
 
-🌍 https://berfinida.github.io/cafe17_website/
+- Product listing with category sections
+- Search, filter, and sort
+- Cart management (add, remove, quantity update)
+- WhatsApp order message integration
+- Language switch (TR / EN)
+- Currency switch (EUR / TRY) with manual rate
+- Product detail modal
+- Responsive layout for mobile and desktop
 
----
+## Tech Stack
 
-## ✨ Features
+- HTML5
+- CSS3
+- Vanilla JavaScript
 
-* 🔎 Product search and filtering
-* 🛒 Shopping cart system
-* 📱 WhatsApp order integration
-* 🌐 Multi-language support (Turkish / English)
-* 💱 Currency switch (TRY / EUR)
-* 📱 Fully responsive design
+## Screenshot
 
----
+![Cafe17 Screenshot](preview.png)
 
-## 🛠️ Built With
+## Developer
 
-* HTML5
-* CSS3
-* Vanilla JavaScript
-
----
-
-## 📸 Screenshot
-
-![Cafe17 Screenshot](screenshot.png)
-
----
-
-## 👩‍💻 Developer
-
-**Berfin Nida Öztürk**
+**Berfin Nida Ozturk**  
 GitHub: https://github.com/berfinida
