@@ -327,6 +327,12 @@
     }
 
     footer{ padding:40px; text-align:center; color:#999; font-size:12px; }
+    .footer-credit{
+      margin-top:8px;
+      font-size:14px;
+      color:#666;
+      text-align:center;
+    }
 
     /* Drawer (mobile nav) */
     .drawer-backdrop{
@@ -766,7 +772,10 @@
     <span class="badge" id="cartCount">0</span>
   </button>
 
-  <footer>CAFE 17 EST. 2026 - İSTANBUL</footer>
+  <footer>
+    <div>CAFE 17 EST. 2026 - İSTANBUL</div>
+    <div id="footerCredit" class="footer-credit">© 2026 Berfin Nida — Kod & Tasarım</div>
+  </footer>
 
   <!-- Drawer -->
   <div class="drawer-backdrop" id="drawerBackdrop" aria-hidden="true"></div>
@@ -915,6 +924,7 @@
         nameDesc: "İsim (Z→A)",
         rateHint: "TRY için kur: otomatik değil (elle ayarlanır).",
         waMini: "Siparişi WhatsApp ile göndermek için “WhatsApp’a Gönder” butonuna bas.",
+        footerCredit: "© 2026 Berfin Nida — Kod & Tasarım",
         categories: { br: "Kahvaltı", sn: "Sandviç & Wrap", cf: "Kahve & Sıcak İçecekler", ds: "Tatlılar", bd: "Soğuk İçecekler", sl: "Salatalar" }
       },
       en: {
@@ -947,6 +957,7 @@
         filterHint: "Choosing a category narrows the list.",
         searchHint: "Tip: Search matches names and descriptions",
         waMini: "To place an order via WhatsApp, click “Send to WhatsApp”.",
+        footerCredit: "© 2026 Berfin Nida — Code & Create",
         categories: { br: "Breakfast", sn: "Sandwiches & Wraps", cf: "Coffee & Hot Drinks", ds: "Desserts", bd: "Cold Drinks", sl: "Salads" }
       }
     };
@@ -1523,6 +1534,7 @@ const productById = Object.fromEntries(products.map(p => [p.id, p]));
       document.getElementById("rateHint").innerText = t.rateHint;
       // hints updated above
       document.getElementById("waMini").innerText = t.waMini;
+      document.getElementById("footerCredit").innerText = t.footerCredit;
     }
 
     function renderMenu(){
