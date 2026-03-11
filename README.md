@@ -15,7 +15,7 @@
 A modern **digital cafe menu web application** built with **HTML, CSS and JavaScript**.
 
 🌐 **Live Demo**  
-https://berfinida.github.io/Cafe17/
+[https://berfinida.github.io/Cafe17/](https://cafe17-adts.vercel.app/)
 
 </div>
 
